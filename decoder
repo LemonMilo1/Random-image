@@ -1,0 +1,50 @@
+from PIL import Image
+import random
+
+alphabet="abcdefghijklmnopqrstuvwxyz_.,:?! "
+message="hello_world"
+modulo=4
+
+def encoded_color(s):
+    b=0
+    for i in range(len(alphabet)) :
+        if alphabet[i] == s:
+            b=i
+    return (b,b,b)
+
+def generate_random_color():
+    return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+
+def generate_random_image(width, height, mess, mod):
+    c=0
+    image = Image.new("RGB", (width, height))
+    a=0
+    for y in range(height):
+        a+=1
+        for x in range(width):
+            a+=0
+            if c+1>=len(message):
+                color = generate_random_color()
+            else:
+                if a%mod==0:
+                    c+=1
+                    color = encoded_color(mess[c])
+                else:
+                    color = generate_random_color()
+            image.putpixel((x, y), color)
+        a=a%modulo
+    return image
+
+
+
+def main():
+    width, height = 100, 100
+    image = generate_random_image(width, height, message, modulo)
+    image.save("random_image.png")
+    print("Image générée avec succès.")
+
+if __name__ == "__main__":
+    main()
+    
+with Image.open("random_image.png") as im:
+    im.rotate(0).show()
