@@ -3,7 +3,7 @@ import random
 
 alphabet="abcdefghijklmnopqrstuvwxyz_.,:?! "
 message="hello_world"
-modulo=100
+modulo=4
 
 def encoded_color(s):
     b=0
@@ -22,7 +22,7 @@ def generate_random_image(width, height, mess, mod):
     for y in range(height):
         a+=1
         for x in range(width):
-            a+=2
+            a+=0
             if c+1>=len(message):
                 color = generate_random_color()
             else:
