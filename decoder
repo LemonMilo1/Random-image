@@ -1,5 +1,5 @@
 from PIL import Image
-alphabet="abcdefghijklmnopqrstuvwxyz_.,:?! '+-*/0123456789"
+alphabet="eixfh.cy gzkbmaw_luvtosqdr,pjn"
 def get_pixel_colors(image_path):
     image = Image.open(image_path)
     width, height = image.size
@@ -19,7 +19,8 @@ def main():
 
     for i, color in enumerate(pixel_colors):
         if color[0]==color[1]==color[2]:
-            print(f"Pixel {i + 1}",alphabet[color[0]])
+            # print(f"Pixel {i + 1}",alphabet[color[0]])
+            print(alphabet[color[0]])
 
 with Image.open("random_image.png") as im:
     im.rotate(0).show()
