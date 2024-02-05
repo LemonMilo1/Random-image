@@ -1,8 +1,29 @@
 from PIL import Image
 import random
 
-alphabet="abcdefghijklmnopqrstuvwxyz_.,:?! '+-*/0123456789"
-message="aghte"
+alpha="abcdefghijklmnopqrstuvwxyz. ,_"
+# Liste de caractères de l'alphabet
+alphabet = "abcdefghijklmnopqrstuvwxyz. ,_"
+
+# Liste de nombres de 1 à 26 (longueur de l'alphabet)
+nombres = list(range(0,len(alphabet)))
+
+# Mélanger la liste de nombres
+random.shuffle(nombres)
+
+# Mélanger la liste de caractères selon l'ordre donné dans la liste "nombres"
+resultat = ''.join([caractere for _, caractere in sorted(zip(nombres, alphabet), key=lambda x: random.random())])
+
+# Afficher la liste mélangée de nombres
+print("Liste de nombres mélangée :", nombres)
+
+# Afficher la liste de caractères de l'alphabet arrangée de manière désordonnée
+print("Liste de caractères de l'alphabet arrangée de manière désordonnée :", resultat)
+
+
+alphabet=resultat
+
+message="bonjour"
 modulo=40
 
 def encoded_color(s):
@@ -13,7 +34,14 @@ def encoded_color(s):
     return (b,b,b)
 
 def generate_random_color():
-    return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+    o=random.randint(0, 255)
+    p=random.randint(0, 255)
+    while p == o:
+        p=random.randint(0, 255)
+    m=random.randint(0, 255)
+    while m == p:
+        m=random.randint(0, 255)
+    return (o,p,m)
 
 def generate_random_image(width, height, mess, mod):
     c=0
@@ -48,3 +76,5 @@ if __name__ == "__main__":
     
 with Image.open("random_image.png") as im:
     im.rotate(0).show()
+    
+print(resultat)
