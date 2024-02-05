@@ -1,9 +1,9 @@
 from PIL import Image
 import random
 
-alphabet="abcdefghijklmnopqrstuvwxyz_.,:?! "
-message="hello_world"
-modulo=4
+alphabet="abcdefghijklmnopqrstuvwxyz_.,:?! '+-*/0123456789"
+message="aghte"
+modulo=40
 
 def encoded_color(s):
     b=0
@@ -22,13 +22,13 @@ def generate_random_image(width, height, mess, mod):
     for y in range(height):
         a+=1
         for x in range(width):
-            a+=0
-            if c+1>=len(message):
+            a+=1
+            if c>=len(message):
                 color = generate_random_color()
             else:
                 if a%mod==0:
-                    c+=1
                     color = encoded_color(mess[c])
+                    c+=1
                 else:
                     color = generate_random_color()
             image.putpixel((x, y), color)
