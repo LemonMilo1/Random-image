@@ -1,5 +1,17 @@
 from PIL import Image
-alphabet="eixfh.cy gzkbmaw_luvtosqdr,pjn"
+import random
+
+cleprivee="bougnoul"
+alphabet = "abcdefghijklmnopqrstuvwxyz. ,_"
+
+def melanger_alphabet_selon_cle(cle,alphabet):
+    alphabet = list(alphabet)
+    random.seed(cle)  # Initialiser la graine pour assurer la reproductibilité
+    random.shuffle(alphabet)
+    return ''.join(alphabet)
+
+alphabet=melanger_alphabet_selon_cle(cleprivee,alphabet)
+
 def get_pixel_colors(image_path):
     image = Image.open(image_path)
     width, height = image.size
