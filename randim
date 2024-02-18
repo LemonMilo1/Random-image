@@ -1,30 +1,21 @@
 from PIL import Image
 import random
 
-alpha="abcdefghijklmnopqrstuvwxyz. ,_"
 # Liste de caractères de l'alphabet
 alphabet = "abcdefghijklmnopqrstuvwxyz. ,_"
 
-# Liste de nombres de 1 à 26 (longueur de l'alphabet)
-nombres = list(range(0,len(alphabet)))
+def melanger_alphabet_selon_cle(cle,alphabet):
+    alphabet = list(alphabet)
+    random.seed(cle)  # Initialiser la graine pour assurer la reproductibilité
+    random.shuffle(alphabet)
+    return ''.join(alphabet)
 
-# Mélanger la liste de nombres
-random.shuffle(nombres)
-
-# Mélanger la liste de caractères selon l'ordre donné dans la liste "nombres"
-resultat = ''.join([caractere for _, caractere in sorted(zip(nombres, alphabet), key=lambda x: random.random())])
-
-# Afficher la liste mélangée de nombres
-print("Liste de nombres mélangée :", nombres)
-
-# Afficher la liste de caractères de l'alphabet arrangée de manière désordonnée
-print("Liste de caractères de l'alphabet arrangée de manière désordonnée :", resultat)
-
-
-alphabet=resultat
 
 message="bonjour"
+cle="mabite"
 modulo=40
+alphabet= melanger_alphabet_selon_cle(cle,alphabet)
+print(alphabet)
 
 def encoded_color(s):
     b=0
