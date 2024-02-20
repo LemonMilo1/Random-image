@@ -1,8 +1,11 @@
 from PIL import Image
 import random
+import os
 
-cleprivee="bougnoul"
+cleprivee="pop"
 alphabet = "abcdefghijklmnopqrstuvwxyz. ,_"
+
+image=Image.open(os.path.join('random_image.png'))
 
 def melanger_alphabet_selon_cle(cle,alphabet):
     alphabet = list(alphabet)
@@ -11,31 +14,37 @@ def melanger_alphabet_selon_cle(cle,alphabet):
     return ''.join(alphabet)
 
 alphabet=melanger_alphabet_selon_cle(cleprivee,alphabet)
+# Afficher la liste de caractères de l'alphabet arrangée de manière désordonnée
+print("Liste de caractères de l'alphabet arrangée de manière désordonnée :", alphabet)
 
-def get_pixel_colors(image_path):
-    image = Image.open(image_path)
-    width, height = image.size
+def test_image(image):
+    w,h = image.size
+    cnt=0
+    for x in range(w):
+        for y in range(h):
+            colorcode = image.getpixel((x,y))
+            if colorcode[0]==colorcode[1]==colorcode[2]:
+                image.putpixel((x,y),(255,0,0))
+                cnt+=1
+    print(cnt)
+    return(image)
 
+def decode(image,alphabet):
+    message=""
+    w,h = image.size
     pixel_colors = []
-
-    for y in range(height):
-        for x in range(width):
-            pixel_color = image.getpixel((x, y))
-            pixel_colors.append(pixel_color)
-
-    return pixel_colors
-
-def main():
-    image_path = "random_image.png"
-    pixel_colors = get_pixel_colors(image_path)
-
+    w,h = image.size
+    for x in range(w):
+        for y in range(h):
+            colorcode= image.getpixel((x,y))
+            if colorcode[0]==colorcode[1]==colorcode[2]:
+                pixel_colors.append(colorcode)
     for i, color in enumerate(pixel_colors):
         if color[0]==color[1]==color[2]:
-            # print(f"Pixel {i + 1}",alphabet[color[0]])
-            print(alphabet[color[0]])
+            message=''.join([message, (alphabet[color[0]])])
+    return message
 
+print(decode(image,alphabet))
+image.save("random_image.png")
 with Image.open("random_image.png") as im:
     im.rotate(0).show()
-    
-if __name__ == "__main__":
-    main()
