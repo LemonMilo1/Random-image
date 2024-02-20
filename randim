@@ -1,71 +1,73 @@
-from PIL import Image
 import random
+import os
+from PIL import Image
 
-# Liste de caractères de l'alphabet
-alphabet = "abcdefghijklmnopqrstuvwxyz. ,_"
+MESSAGE="bonjour"
+CLE="pop"
 
-def melanger_alphabet_selon_cle(cle,alphabet):
-    alphabet = list(alphabet)
+image=Image.open(os.path.join('Lenine.png'))
+
+# Liste de caractères de l'alphabet limitée à cause de notre système à 256,
+# n'importe quel alphabet peut être inséré et agir comme une impasse supplémentaire, ainsi qu'un adaptation à tous les langages.
+ALPHABET="abcdefghijklmnopqrstuvwxyz. ,_"
+
+def melanger_alphabet_selon_cle(cle, charlist):
+    alphabet = list(charlist)
     random.seed(cle)  # Initialiser la graine pour assurer la reproductibilité
     random.shuffle(alphabet)
     return ''.join(alphabet)
 
+alphabet = melanger_alphabet_selon_cle(CLE, ALPHABET)
 
-message="bonjour"
-cle="mabite"
-modulo=40
-alphabet= melanger_alphabet_selon_cle(cle,alphabet)
-print(alphabet)
+# Afficher la liste de caractères de l'alphabet arrangée de manière désordonnée
+print("Liste de caractères de l'alphabet arrangée de manière désordonnée :", alphabet)
 
-def encoded_color(s):
-    b=0
-    for i in range(len(alphabet)) :
-        if alphabet[i] == s:
-            b=i
-    return (b,b,b)
+def encoded_color(message, alpha):
+    RGBcode=0
+    for count in range(len(alpha)) :
+        if alpha[count] == message:
+            RGBcode=count
+    return (RGBcode,RGBcode,RGBcode)
 
-def generate_random_color():
-    o=random.randint(0, 255)
-    p=random.randint(0, 255)
-    while p == o:
-        p=random.randint(0, 255)
-    m=random.randint(0, 255)
-    while m == p:
-        m=random.randint(0, 255)
-    return (o,p,m)
+def encode_message(message):
+    codelist=[]
+    for i in range(len(message)):
+        codelist.append(encoded_color(message[i], alphabet))
+    return codelist
 
-def generate_random_image(width, height, mess, mod):
-    c=0
-    image = Image.new("RGB", (width, height))
-    a=0
-    for y in range(height):
-        a+=1
-        for x in range(width):
-            a+=1
-            if c>=len(message):
-                color = generate_random_color()
-            else:
-                if a%mod==0:
-                    color = encoded_color(mess[c])
-                    c+=1
+def prepare_image(image, messcode, tolerance=1):
+    codelist = messcode
+    found_rgb = set()  # Pour garder une trace des codes RGB trouvés
+    w, h = image.size
+    for x in range(w):
+        for y in range(h):
+            colorcode = image.getpixel((x, y))
+            if colorcode[0] == colorcode[1] == colorcode[2]: 
+                if codelist and colorcode==codelist[0]:
+                        codelist.pop(0)
                 else:
-                    color = generate_random_color()
-            image.putpixel((x, y), color)
-        a=a%modulo
+                        if colorcode[2]<128: # Transformer en bleu la couleur primaire la moins visible des trois
+                            image.putpixel((x, y), (colorcode[0],colorcode[1],colorcode[2]+tolerance))
+                        else:
+                            image.putpixel((x, y), (colorcode[0],colorcode[1],colorcode[2]-tolerance))
+
     return image
 
+def test_image(image):
+    w,h = image.size
+    cnt=0
+    for x in range(w):
+        for y in range(h):
+            colorcode = image.getpixel((x,y))
+            if colorcode[0]==colorcode[1]==colorcode[2]:
+                cnt+=1
+    return(cnt)
+               
 
-
-def main():
-    width, height = 100, 100
-    image = generate_random_image(width, height, message, modulo)
-    image.save("random_image.png")
-    print("Image générée avec succès.")
-
-if __name__ == "__main__":
-    main()
-    
+prepare_image(image,encode_message(MESSAGE))
+image.save("random_image.png")
+print("Image générée avec succès.")
 with Image.open("random_image.png") as im:
     im.rotate(0).show()
-    
-print(resultat)
+
+
