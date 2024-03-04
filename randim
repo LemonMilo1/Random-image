@@ -1,3 +1,6 @@
+"""Randim est un jeu de fonctions qui vont cacher un message dans une image
+en utilisant ses codes RGB égaux,
+fonctionne mieux sur des images en noir et blanc"""
 import random
 import os
 from PIL import Image
@@ -8,12 +11,13 @@ CLE="pop"
 imagecode=Image.open(os.path.join('Lenine.png'))
 
 #Liste de caractères de l'alphabet limitée à cause de notre système à 256,
-#n'importe quel alphabet peut être inséré et agir comme une impasse 
+#n'importe quel alphabet peut être inséré et agir comme une impasse
 #supplémentaire, ainsi qu'un adaptation à tous les langages.
 ALPHABET="abcdefghijklmnopqrstuvwxyz. ,_"
 alphabet=[]
 
 def melanger_alphabet_selon_cle(cle, charlist, alpha):
+    """Mélange un alphabet selon une graine"""
     alpha = list(charlist)
     random.seed(cle)  # Initialiser la graine pour assurer la reproductibilité
     random.shuffle(alpha)
@@ -25,7 +29,7 @@ alphabet = melanger_alphabet_selon_cle(CLE, ALPHABET, alphabet)
 print("Liste de caractères de l'alphabet désordonnée :", alphabet)
 
 def encoded_color(char, alpha):
-    """Prends pour argument un charactère et le renvoie en code RGB selon 
+    """Prends pour argument un charactère et le renvoie en code RGB selon
     l'index d'un alphabet alpha"""
     RGBcode=0
     for count in range(len(alpha)) :
@@ -72,7 +76,6 @@ def test_image(image):
             if colorcode[0]==colorcode[1]==colorcode[2]:
                 cnt+=1
     return cnt
-               
 
 prepare_image(imagecode,encode_message(MESSAGE))
 imagecode.save("random_image.png")
