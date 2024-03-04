@@ -8,32 +8,30 @@ from PIL import Image
 MESSAGE="bonjour"
 CLE="pop"
 
-imagecode=Image.open(os.path.join('Lenine.png'))
+image=Image.open(os.path.join('TF2.png'))
 
-#Liste de caractères de l'alphabet limitée à cause de notre système à 256,
-#n'importe quel alphabet peut être inséré et agir comme une impasse
-#supplémentaire, ainsi qu'un adaptation à tous les langages.
+# Liste de caractères de l'alphabet limitée à cause de notre système à 256,
+# n'importe quel alphabet peut être inséré et agir comme une impasse supplémentaire, ainsi qu'un adaptation à tous les langages.
 ALPHABET="abcdefghijklmnopqrstuvwxyz. ,_"
-alphabet=[]
 
-def melanger_alphabet_selon_cle(cle, charlist, alpha):
+def melanger_alphabet_selon_cle(cle, charlist):
     """Mélange un alphabet selon une graine"""
-    alpha = list(charlist)
+    alphabet = list(charlist)
     random.seed(cle)  # Initialiser la graine pour assurer la reproductibilité
-    random.shuffle(alpha)
-    return ''.join(alpha)
+    random.shuffle(alphabet)
+    return ''.join(alphabet)
 
-alphabet = melanger_alphabet_selon_cle(CLE, ALPHABET, alphabet)
+alphabet = melanger_alphabet_selon_cle(CLE, ALPHABET)
 
 # Afficher la liste de caractères de l'alphabet arrangée de manière désordonnée
-print("Liste de caractères de l'alphabet désordonnée :", alphabet)
+print("Liste de caractères de l'alphabet arrangée de manière désordonnée :", alphabet)
 
-def encoded_color(char, alpha):
+def encoded_color(message, alpha):
     """Prends pour argument un charactère et le renvoie en code RGB selon
     l'index d'un alphabet alpha"""
     RGBcode=0
     for count in range(len(alpha)) :
-        if alpha[count] == char:
+        if alpha[count] == message:
             RGBcode=count
     return (RGBcode,RGBcode,RGBcode)
 
@@ -50,19 +48,19 @@ def prepare_image(image, messcode, tolerance=1):
         comme [22,22,22] mais conserve les codes RGB correspondant à ceux du
         message"""
     codelist = messcode
+    found_rgb = set()  # Pour garder une trace des codes RGB trouvés
     w, h = image.size
     for x in range(w):
         for y in range(h):
             colorcode = image.getpixel((x, y))
-            if colorcode[0] == colorcode[1] == colorcode[2]:
+            if colorcode[0] == colorcode[1] == colorcode[2]: 
                 if codelist and colorcode==codelist[0]:
-                    codelist.pop(0)
+                        codelist.pop(0)
                 else:
-                    # Transformer en bleu la couleur primaire la moins visible des trois
-                    if colorcode[2]<128:
-                        image.putpixel((x, y), (colorcode[0],colorcode[1],colorcode[2]+tolerance))
-                    else:
-                        image.putpixel((x, y), (colorcode[0],colorcode[1],colorcode[2]-tolerance))
+                        if colorcode[2]<128: # Transformer en bleu la couleur primaire la moins visible des trois
+                            image.putpixel((x, y), (colorcode[0],colorcode[1],colorcode[2]+tolerance))
+                        else:
+                            image.putpixel((x, y), (colorcode[0],colorcode[1],colorcode[2]-tolerance))
 
     return image
 
@@ -75,10 +73,13 @@ def test_image(image):
             colorcode = image.getpixel((x,y))
             if colorcode[0]==colorcode[1]==colorcode[2]:
                 cnt+=1
-    return cnt
+    return(cnt)
+               
 
-prepare_image(imagecode,encode_message(MESSAGE))
-imagecode.save("random_image.png")
+prepare_image(image,encode_message(MESSAGE))
+image.save("random_image.png")
 print("Image générée avec succès.")
 with Image.open("random_image.png") as im:
     im.rotate(0).show()
+
+
