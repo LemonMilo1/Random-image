@@ -4,21 +4,21 @@ import random
 import os
 from PIL import Image
 
-CLEPRIVEE="pop"
-charlist = "abcdefghijklmnopqrstuvwxyz. ,_"
+cleprivee="pop"
+alphabet = "abcdefghijklmnopqrstuvwxyz. ,_"
 
-imagecode=Image.open(os.path.join('random_image.png'))
+image=Image.open(os.path.join('random_image.png'))
 
-def melanger_alphabet_selon_cle(cle,alphaB):
+def melanger_alphabet_selon_cle(cle,alphabet):
     """Mélange un alphabet selon une graine"""
-    alpha = list(alphaB)
+    alphabet = list(alphabet)
     random.seed(cle)  # Initialiser la graine pour assurer la reproductibilité
-    random.shuffle(alpha)
-    return ''.join(alpha)
+    random.shuffle(alphabet)
+    return ''.join(alphabet)
 
-charlist=melanger_alphabet_selon_cle(CLEPRIVEE,charlist)
+alphabet=melanger_alphabet_selon_cle(cleprivee,alphabet)
 # Afficher la liste de caractères de l'alphabet arrangée de manière désordonnée
-print("Liste de caractères de l'alphabet désordonné : ", charlist)
+print("Liste de caractères de l'alphabet arrangée de manière désordonnée :", alphabet)
 
 def test_image(image):
     """parcours l'image et renvoie le nombre de pixels au code RGB égaux"""
@@ -31,7 +31,7 @@ def test_image(image):
                 image.putpixel((x,y),(255,0,0))
                 cnt+=1
     print(cnt)
-    return image
+    return(image)
 
 def decode(image,alphabet):
     """Cherche tous les codes RGB égaux dans l'image et les fait
@@ -45,12 +45,12 @@ def decode(image,alphabet):
             colorcode= image.getpixel((x,y))
             if colorcode[0]==colorcode[1]==colorcode[2]:
                 pixel_colors.append(colorcode)
-    for color in enumerate(pixel_colors):
+    for i, color in enumerate(pixel_colors):
         if color[0]==color[1]==color[2]:
             message=''.join([message, (alphabet[color[0]])])
     return message
 
-print(decode(imagecode,charlist))
-imagecode.save("random_image.png")
+print(decode(image,alphabet))
+image.save("random_image.png")
 with Image.open("random_image.png") as im:
     im.rotate(0).show()
