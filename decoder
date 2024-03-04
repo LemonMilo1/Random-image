@@ -1,23 +1,27 @@
-from PIL import Image
+"""Decoder sert à décoder les images que produit randim en utilisant la méthode
+inverse."""
 import random
 import os
+from PIL import Image
 
-cleprivee="pop"
-alphabet = "abcdefghijklmnopqrstuvwxyz. ,_"
+CLEPRIVEE="pop"
+charlist = "abcdefghijklmnopqrstuvwxyz. ,_"
 
-image=Image.open(os.path.join('random_image.png'))
+imagecode=Image.open(os.path.join('random_image.png'))
 
-def melanger_alphabet_selon_cle(cle,alphabet):
-    alphabet = list(alphabet)
+def melanger_alphabet_selon_cle(cle,alphaB):
+    """Mélange un alphabet selon une graine"""
+    alpha = list(alphaB)
     random.seed(cle)  # Initialiser la graine pour assurer la reproductibilité
-    random.shuffle(alphabet)
-    return ''.join(alphabet)
+    random.shuffle(alpha)
+    return ''.join(alpha)
 
-alphabet=melanger_alphabet_selon_cle(cleprivee,alphabet)
+charlist=melanger_alphabet_selon_cle(CLEPRIVEE,charlist)
 # Afficher la liste de caractères de l'alphabet arrangée de manière désordonnée
-print("Liste de caractères de l'alphabet arrangée de manière désordonnée :", alphabet)
+print("Liste de caractères de l'alphabet désordonné : ", charlist)
 
 def test_image(image):
+    """parcours l'image et renvoie le nombre de pixels au code RGB égaux"""
     w,h = image.size
     cnt=0
     for x in range(w):
@@ -27,9 +31,11 @@ def test_image(image):
                 image.putpixel((x,y),(255,0,0))
                 cnt+=1
     print(cnt)
-    return(image)
+    return image
 
 def decode(image,alphabet):
+    """Cherche tous les codes RGB égaux dans l'image et les fait
+    correspondre à son index aléatoire"""
     message=""
     w,h = image.size
     pixel_colors = []
@@ -39,12 +45,12 @@ def decode(image,alphabet):
             colorcode= image.getpixel((x,y))
             if colorcode[0]==colorcode[1]==colorcode[2]:
                 pixel_colors.append(colorcode)
-    for i, color in enumerate(pixel_colors):
+    for color in enumerate(pixel_colors):
         if color[0]==color[1]==color[2]:
             message=''.join([message, (alphabet[color[0]])])
     return message
 
-print(decode(image,alphabet))
-image.save("random_image.png")
+print(decode(imagecode,charlist))
+imagecode.save("random_image.png")
 with Image.open("random_image.png") as im:
     im.rotate(0).show()
