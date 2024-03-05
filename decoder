@@ -2,8 +2,8 @@ import random
 import os
 from PIL import Image
 
-cleprivee="levevuo"
-ALPHABET = "abcdefghijklmnopqrstuvwxyz. ,_"
+cleprivee="cle"
+ALPHABET = "abcdefghijklmnopqrstuvwxyz?,.;/:§!%+-*éèàç&0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ "
 
 
 
