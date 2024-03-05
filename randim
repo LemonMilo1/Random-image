@@ -1,85 +1,72 @@
-"""Randim est un jeu de fonctions qui vont cacher un message dans une image
-en utilisant ses codes RGB égaux,
-fonctionne mieux sur des images en noir et blanc"""
-import random
-import os
 from PIL import Image
+import random
 
-MESSAGE="bonjour"
-CLE="pop"
 
-image=Image.open(os.path.join('TF2.png'))
-
-# Liste de caractères de l'alphabet limitée à cause de notre système à 256,
-# n'importe quel alphabet peut être inséré et agir comme une impasse supplémentaire, ainsi qu'un adaptation à tous les langages.
-ALPHABET="abcdefghijklmnopqrstuvwxyz. ,_"
-
+ALPHABET ="abcdefghijklmnopqrstuvwxyz. ,_"
+cle="levevuo"
 def melanger_alphabet_selon_cle(cle, charlist):
-    """Mélange un alphabet selon une graine"""
+    """Melange un alphabet selon une graine"""
     alphabet = list(charlist)
-    random.seed(cle)  # Initialiser la graine pour assurer la reproductibilité
+    random.seed(cle)  # Initialiser la graine pour assurer la reproductibilitÃ©
     random.shuffle(alphabet)
     return ''.join(alphabet)
 
-alphabet = melanger_alphabet_selon_cle(CLE, ALPHABET)
+alphabet = melanger_alphabet_selon_cle(cle, ALPHABET)
 
-# Afficher la liste de caractères de l'alphabet arrangée de manière désordonnée
-print("Liste de caractères de l'alphabet arrangée de manière désordonnée :", alphabet)
+print(alphabet)
 
-def encoded_color(message, alpha):
-    """Prends pour argument un charactère et le renvoie en code RGB selon
-    l'index d'un alphabet alpha"""
-    RGBcode=0
-    for count in range(len(alpha)) :
-        if alpha[count] == message:
-            RGBcode=count
-    return (RGBcode,RGBcode,RGBcode)
+message="kidsdansmacaveunited"
+modulo=40
 
-def encode_message(message):
-    """Prends pour argument un message et le renvoie
-        sous forme d'une liste de codes RGB"""
-    codelist=[]
-    for i in range(len(message)):
-        codelist.append(encoded_color(message[i], alphabet))
-    return codelist
+def encoded_color(s):
+    b=0
+    for i in range(len(alphabet)) :
+        if alphabet[i] == s:
+            b=i
+    return (b,b,b)
 
-def prepare_image(image, messcode, tolerance=1):
-    """Prépare l'image à la dissimulation du code en faussant les RGB égaux
-        comme [22,22,22] mais conserve les codes RGB correspondant à ceux du
-        message"""
-    codelist = messcode
-    found_rgb = set()  # Pour garder une trace des codes RGB trouvés
-    w, h = image.size
-    for x in range(w):
-        for y in range(h):
-            colorcode = image.getpixel((x, y))
-            if colorcode[0] == colorcode[1] == colorcode[2]: 
-                if codelist and colorcode==codelist[0]:
-                        codelist.pop(0)
+def generate_random_color():
+    o=random.randint(0, 255)
+    p=random.randint(0, 255)
+    while p == o:
+        p=random.randint(0, 255)
+    m=random.randint(0, 255)
+    while m == p:
+        m=random.randint(0, 255)
+    return (o,p,m)
+
+def generate_random_image(width, height, mess, mod):
+    c=0
+    image = Image.new("RGB", (width, height))
+    a=0
+    for y in range(height):
+        a+=1
+        for x in range(width):
+            a+=1
+            if c>=len(message):
+                color = generate_random_color()
+            else:
+                if a%mod==0:
+                    color = encoded_color(mess[c])
+                    c+=1
                 else:
-                        if colorcode[2]<128: # Transformer en bleu la couleur primaire la moins visible des trois
-                            image.putpixel((x, y), (colorcode[0],colorcode[1],colorcode[2]+tolerance))
-                        else:
-                            image.putpixel((x, y), (colorcode[0],colorcode[1],colorcode[2]-tolerance))
-
+                    color = generate_random_color()
+            image.putpixel((x, y), color)
+        a=a%modulo
     return image
 
-def test_image(image):
-    """parcours l'image et renvoie le nombre de pixels au code RGB égaux"""
-    w,h = image.size
-    cnt=0
-    for x in range(w):
-        for y in range(h):
-            colorcode = image.getpixel((x,y))
-            if colorcode[0]==colorcode[1]==colorcode[2]:
-                cnt+=1
-    return(cnt)
-               
 
-prepare_image(image,encode_message(MESSAGE))
-image.save("random_image.png")
-print("Image générée avec succès.")
+
+def main():
+    width, height = 100, 100
+    image = generate_random_image(width, height, message, modulo)
+    image.save("random_image.png")
+    print("Image générée avec succès.")
+
+if __name__ == "__main__":
+    main()
+    
 with Image.open("random_image.png") as im:
     im.rotate(0).show()
-
-
+    
+print(cle)
