@@ -2,8 +2,8 @@ from PIL import Image
 import random
 
 
-ALPHABET ="abcdefghijklmnopqrstuvwxyz. ,_"
-cle="levevuo"
+ALPHABET ="abcdefghijklmnopqrstuvwxyz?,.;/:§!%+-*éèàç&0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ "
+cle="cle"
 def melanger_alphabet_selon_cle(cle, charlist):
     """Melange un alphabet selon une graine"""
     alphabet = list(charlist)
@@ -15,7 +15,7 @@ alphabet = melanger_alphabet_selon_cle(cle, ALPHABET)
 
 print(alphabet)
 
-message="kidsdansmacaveunited"
+message="message           "
 modulo=40
 
 def encoded_color(s):
